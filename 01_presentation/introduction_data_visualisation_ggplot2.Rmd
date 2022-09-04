@@ -1,0 +1,124 @@
+---
+title: "Introduction to data visualisation with `ggplot2`"
+author: "Jonas Hagenberg"
+institute: "EPN autumn school"
+date: "10.09.2022"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+library(ggplot2)
+library(magrittr)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_duo_accent(
+  primary_color = "#1a5f96",
+  secondary_color = "#03A696",
+  code_inline_background_color = "#f8f8f8"
+)
+```
+
+# Overview
+
+- read in data
+- bring it into the correct form
+- plot it with `ggplot2`
+
+---
+
+# Data read in
+```{r}
+cytokine_data <- read.table(
+  file = "03_data/example_cytokines.csv",
+  header = TRUE,
+  sep = ";"
+)
+head(cytokine_data)
+```
+
+---
+
+# `ggplot2` - grammar of data
+
+---
+
+# Overview `ggplot2`
+```{r, eval = FALSE}
+library(ggplot2)
+ggplot(
+  data = your_dataset,
+  mapping = aes(x = variable)
+) +
+  geom_*
+```
+
+For better clarity it can also be written as:
+```{r, eval = FALSE}
+library(magrittr)
+dataset %>% 
+  ggplot() +
+  aes(x = variable) +
+  geom_*
+```
+
+---
+
+# Simple Boxplot
+```{r}
+cytokine_data %>% 
+  ggplot() +
+  aes(y = TNF_alpha) +
+  geom_boxplot()
+```
+
+---
+
+# Tidy data
+So far: every row is one subject, several cytokines per row.
+**Tidy data:**
+- Every column is a variable.
+- Every row is an observation.
+- Every cell is a single value.
+
+We only want **one observation per row**.
+
+---
+
+# From wide to long format
+```{r, message = FALSE}
+library(tidyr)
+cytokine_data_long <- pivot_longer(
+  data = cytokine_data,
+  cols = TNF_alpha:IL_17A,
+  names_to = "assay",
+  values_to = "concentration"
+)
+head(cytokine_data_long)
+```
+
+---
+
+# Several boxplots
+Now we can use the new variables in `ggplot2`:
+```{r}
+cytokine_data_long %>% 
+  ggplot() +
+  aes(
+    x = assay,
+    y = concentration,
+    fill = assay
+  ) +
+  geom_boxplot()
+```
+
