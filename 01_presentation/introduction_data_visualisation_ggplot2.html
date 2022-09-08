@@ -18,10 +18,10 @@ class: center, middle, inverse, title-slide
 ### Jonas Hagenberg
 ]
 .institute[
-### Max Planck Institute of Psychiatry
+### EPN autumn school
 ]
 .date[
-### 10.09.2022
+### 09.09.2022
 ]
 
 ---
@@ -38,6 +38,10 @@ class: center, middle, inverse, title-slide
 - plot it with `ggplot2`
 
 ---
+
+# Boxplot
+![](introduction_data_visualisation_ggplot2_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
 
 # Data read in
 
@@ -64,6 +68,13 @@ head(cytokine_data)
 
 # `ggplot2` - grammar of data
 
+describe your plot step by step:
+- which data set to use
+- map variables to aesthetics (e.g. x position, y position, fill colour, shape, ...)
+- which geometric objects to choose (e.g. points, lines, ...)
+- which scale to use (untransformed scale, log scale, ...)
+- further options how your plot should look like (colours, themes, grids, ...)
+
 ---
 
 # Overview `ggplot2`
@@ -77,33 +88,29 @@ ggplot(
   geom_*
 ```
 
-For better clarity it can also be written as:
-
-```r
-library(magrittr)
-dataset %&gt;% 
-  ggplot() +
-  aes(x = variable) +
-  geom_*
-```
-
 ---
 
 # Simple Boxplot
+.pull-left[
 
 ```r
-cytokine_data %&gt;% 
-  ggplot() +
-  aes(y = TNF_alpha) +
+ggplot(
+  data = cytokine_data,
+  mapping = aes(y = TNF_alpha)
+) +
   geom_boxplot()
 ```
+]
+.pull-right[
+![](introduction_data_visualisation_ggplot2_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+]
 
-![](introduction_data_visualisation_ggplot2_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
 
 ---
 
 # Tidy data
 So far: every row is one subject, several cytokines per row.
+
 **Tidy data:**
 - Every column is a variable.
 - Every row is an observation.
@@ -141,21 +148,49 @@ head(cytokine_data_long)
 ---
 
 # Several boxplots
+.pull-left[
 Now we can use the new variables in `ggplot2`:
 
 ```r
-cytokine_data_long %&gt;% 
-  ggplot() +
-  aes(
+ggplot(
+  data = cytokine_data_long,
+  mapping = aes(
     x = assay,
     y = concentration,
     fill = assay
-  ) +
+  )
+) +
   geom_boxplot()
 ```
+]
+.pull-right[
+![](introduction_data_visualisation_ggplot2_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+]
 
-![](introduction_data_visualisation_ggplot2_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+---
 
+# Where to find help
+
+- documentation: https://ggplot2.tidyverse.org/index.html
+- https://community.rstudio.com/
+- http://www.sthda.com/english/wiki/ggplot2-essentials
+- https://r-graph-gallery.com/ggplot2-package.html
+- https://stackoverflow.com/questions/tagged/r
+
+---
+
+# Alternative writing style
+For better clarity one can also write:
+
+```r
+library(magrittr)
+dataset %&gt;% 
+  ggplot() +
+  aes(x = variable) +
+  geom_*
+```
+  
+  
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

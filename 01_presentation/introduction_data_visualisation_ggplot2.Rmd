@@ -2,7 +2,7 @@
 title: "Introduction to data visualisation with `ggplot2`"
 author: "Jonas Hagenberg"
 institute: "EPN autumn school"
-date: "10.09.2022"
+date: "09.09.2022"
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
@@ -37,6 +37,38 @@ style_duo_accent(
 
 ---
 
+# Boxplot
+```{r, echo = FALSE}
+set.seed(4)
+bp_data <- data.frame(test = rnorm(20))
+anno_data <- data.frame(
+  text = c("outlying point", "25% quantile - 1.5 * IQR", "25% quantile", "median",
+           "75% quantile", "75% quantile + 1.5 * IQR"),
+  pos = c(-1.281247, -0.5424926, -0.05894495, 0.1928908, 0.7397427, 1.89654)
+)
+ggplot(
+  data = bp_data,
+  mapping = aes(x = 0.5, y = test)
+) +
+  geom_boxplot() +
+  geom_point(mapping = aes(x = 0, y = test)) +
+  geom_text(
+    data = anno_data,
+    mapping = aes(x = 1, y = pos, label = text),
+    hjust = "left",
+    size = 8
+    ) +
+  theme_minimal(base_size = 22) +
+  theme(
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) +
+  xlab(NULL) +
+  ylab(NULL) +
+  coord_cartesian(xlim = c(0, 3))
+```
+
+
 # Data read in
 ```{r}
 cytokine_data <- read.table(
@@ -51,6 +83,13 @@ head(cytokine_data)
 
 # `ggplot2` - grammar of data
 
+describe your plot step by step:
+- which data set to use
+- map variables to aesthetics (e.g. x position, y position, fill colour, shape, ...)
+- which geometric objects to choose (e.g. points, lines, ...)
+- which scale to use (untransformed scale, log scale, ...)
+- further options how your plot should look like (colours, themes, grids, ...)
+
 ---
 
 # Overview `ggplot2`
@@ -61,31 +100,36 @@ ggplot(
   mapping = aes(x = variable)
 ) +
   geom_*
-```
-
-For better clarity it can also be written as:
-```{r, eval = FALSE}
-library(magrittr)
-dataset %>% 
-  ggplot() +
-  aes(x = variable) +
-  geom_*
-```
+  ```
 
 ---
 
 # Simple Boxplot
-```{r}
-cytokine_data %>% 
-  ggplot() +
-  aes(y = TNF_alpha) +
+.pull-left[
+```{r, eval = FALSE}
+ggplot(
+  data = cytokine_data,
+  mapping = aes(y = TNF_alpha)
+) +
   geom_boxplot()
 ```
+]
+.pull-right[
+```{r, echo = FALSE}
+ggplot(
+  data = cytokine_data,
+  mapping = aes(y = TNF_alpha)
+) +
+  geom_boxplot()
+```
+]
+
 
 ---
 
 # Tidy data
 So far: every row is one subject, several cytokines per row.
+
 **Tidy data:**
 - Every column is a variable.
 - Every row is an observation.
@@ -110,15 +154,54 @@ head(cytokine_data_long)
 ---
 
 # Several boxplots
+.pull-left[
 Now we can use the new variables in `ggplot2`:
-```{r}
-cytokine_data_long %>% 
-  ggplot() +
-  aes(
+```{r, eval = FALSE}
+ggplot(
+  data = cytokine_data_long,
+  mapping = aes(
     x = assay,
     y = concentration,
     fill = assay
-  ) +
+  )
+) +
   geom_boxplot()
 ```
+]
+.pull-right[
+```{r, echo = FALSE}
+ggplot(
+  data = cytokine_data_long,
+  mapping = aes(
+    x = assay,
+    y = concentration,
+    fill = assay
+  )
+) +
+  geom_boxplot()
+```
+]
 
+---
+
+# Where to find help
+
+- documentation: https://ggplot2.tidyverse.org/index.html
+- https://community.rstudio.com/
+- http://www.sthda.com/english/wiki/ggplot2-essentials
+- https://r-graph-gallery.com/ggplot2-package.html
+- https://stackoverflow.com/questions/tagged/r
+
+---
+
+# Alternative writing style
+For better clarity one can also write:
+```{r, eval = FALSE}
+library(magrittr)
+dataset %>% 
+  ggplot() +
+  aes(x = variable) +
+  geom_*
+```
+  
+  
