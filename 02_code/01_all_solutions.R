@@ -10,18 +10,19 @@ str(cytokine_data)
 View(cytokine_data)
 
 # Step 2 - basic box plot
-library(magrittr)
 library(ggplot2)
 
-cytokine_data %>% 
-  ggplot() +
-  aes(y = TNF_alpha) +
+ggplot(
+  data = cytokine_data,
+  mapping = aes(y = TNF_alpha)
+) +
   geom_boxplot()
 
 # Step 3 - make the plot prettier
-cytokine_data %>% 
-  ggplot() +
-  aes(y = TNF_alpha) +
+ggplot(
+  data = cytokine_data,
+  mapping = aes(y = TNF_alpha)
+) +
   geom_boxplot() +
   theme(
     axis.ticks.x = element_blank(),
@@ -42,6 +43,49 @@ cytokine_data_long <- cytokine_data %>%
   )
 
 # Step 5 - plot several boxplots
+ggplot(
+  data = cytokine_data_long,
+  mapping = aes(
+    x = assay,
+    y = concentration
+  )
+) +
+  geom_boxplot()
+
+# Step 6 - make the plot prettier
+ggplot(
+  data = cytokine_data_long,
+  mapping = aes(
+    x = assay,
+    y = concentration,
+    fill = assay
+  )
+) +
+  geom_boxplot() +
+  ylab("concentration in pg/ml")
+
+################################################################################
+# different way to write plots
+library(magrittr)
+
+cytokine_data %>% 
+  ggplot() +
+  aes(y = TNF_alpha) +
+  geom_boxplot()
+
+cytokine_data %>% 
+  ggplot() +
+  aes(y = TNF_alpha) +
+  geom_boxplot() +
+  theme(
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) +
+  labs(
+    x = "TNF-alpha",
+    y = "concentration in pg/ml"
+  )
+
 cytokine_data_long %>% 
   ggplot() +
   aes(
@@ -50,7 +94,6 @@ cytokine_data_long %>%
   ) +
   geom_boxplot()
 
-# Step 6 - make the plot prettier
 cytokine_data_long %>% 
   ggplot() +
   aes(
